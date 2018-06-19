@@ -20,7 +20,9 @@ namespace SpyrosORM.DataAccess
         /// 
         /// </summary>
         public List<DataField> DataFields { get; set; }
-
+        /// <summary>
+        /// 
+        /// </summary>
         public DatabaseType DataSourceType { set; get; }
         /// <summary>
         /// 
@@ -61,8 +63,7 @@ namespace SpyrosORM.DataAccess
                 var newDataField = new DataField {Name = field.Name};
                 if (field.GetCustomAttributes<DbColumnAttribute>() != null)
                 {
-                    newDataField.TableField = new DbTableField()
-                    {
+                    newDataField.TableField = new DbTableField(){
                         ColumnName = field.GetCustomAttribute<DbColumnAttribute>().Name,
                         IsIDField = field.GetCustomAttribute<IsIDFieldAttribute>() != null ? field.GetCustomAttribute<IsIDFieldAttribute>().Status : false,
                         AllowNull = field.GetCustomAttribute<AllowNullAttribute>() != null ? field.GetCustomAttribute<AllowNullAttribute>().Status : false,
@@ -71,6 +72,20 @@ namespace SpyrosORM.DataAccess
                         FieldType = field.PropertyType
                     };
                 }
+
+                if (field.GetCustomAttribute<DataRelationAttribute>() == null) continue;
+
+                var dataRelationAttribute = field.GetCustomAttribute<DataRelationAttribute>();
+
+                newDataField.Relation = new DbRelation()
+                {
+                    DataField = field.Name,
+                    RelationName = dataRelationAttribute.Name
+                    //WithDataModel = dataRelationAttribute.WithDataModel,
+                    //OnDataModelKey = dataRelationAttribute.OnDataModelKey,
+                    //ThisKey = dataRelationAttribute.ThisKey,
+                    //RelationType = dataRelationAttribute.RelationType
+                };
             }
 
         }
