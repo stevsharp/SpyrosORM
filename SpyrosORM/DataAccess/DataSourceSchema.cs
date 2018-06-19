@@ -15,6 +15,11 @@ namespace SpyrosORM.DataAccess
         /// <summary>
         /// 
         /// </summary>
+        private string IDFieldName;
+
+        /// <summary>
+        /// 
+        /// </summary>
         public string DataSourceName { get; set; }
         /// <summary>
         /// 
@@ -79,7 +84,6 @@ namespace SpyrosORM.DataAccess
                         AllowIDInsert = field.GetCustomAttribute<AllowIDInsertAttribute>() != null && field.GetCustomAttribute<AllowIDInsertAttribute>().Status,
                         IsKey = field.GetCustomAttribute<IsKeyAttribute>() != null && field.GetCustomAttribute<IsKeyAttribute>().Status,
                         FieldType = field.PropertyType
-
                     };
                 }
 
@@ -96,6 +100,15 @@ namespace SpyrosORM.DataAccess
                     //ThisKey = dataRelationAttribute.ThisKey,
                     //RelationType = dataRelationAttribute.RelationType
                 };
+
+                this.DataFields.Add(newDataField);
+            }
+
+            if (this.DataFields.Count <= 0) return;
+            {
+                var field = this.DataFields.Find(item => item.TableField != null && item.TableField.IsIDField == true);
+                if (field != null)
+                    this.IDFieldName = field.TableField.ColumnName;
             }
 
         }

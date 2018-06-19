@@ -16,6 +16,6 @@ namespace SpyrosORM.DataModel
         /// 
         /// </summary>
         [DbColumn("RegionDescription")]
-        public int RegionDescripton { get; set; }
+        public string RegionDescripton { get; set; }
     }
 }

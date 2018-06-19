@@ -18,6 +18,10 @@ namespace SpyrosORM.DataAccess
         /// <summary>
         /// 
         /// </summary>
+        private static readonly List<Type> NumericTypes = new List<Type>() { typeof(int), typeof(long), typeof(Int16), typeof(Int32), typeof(Int64) };
+        /// <summary>
+        /// 
+        /// </summary>
         public DataSourceSchema<T> Schema { get; set; }
         /// <summary>
         /// 
@@ -28,11 +32,47 @@ namespace SpyrosORM.DataAccess
         {
             var columnsValues = new Dictionary<string, object>();
 
-            string finalDataSourceName = Schema.DataSourceName;
+            var objectSchemaFields = Schema.DataFields.Where(field => field.TableField != null).ToList<DataField>();
 
-            var objectSchemaFields = Schema.DataFields
-                .Where(field => field.TableField != null)
-                .ToList<DataField>();
+            foreach (var field in objectSchemaFields)
+            {
+                if (field.TableField.IsIDField && field.TableField.AllowIDInsert) continue;
+                var dataObjectAttr = dataObject.GetType().GetProperty(field.Name);
+                if (dataObjectAttr==null) continue;
+
+                if (!field.TableField.AllowNull)
+                {
+                    var dataObjectAttrValue = dataObjectAttr.GetValue(dataObject, null);
+                    if (dataObjectAttrValue != null)
+                    {
+                        if (NumericTypes.Contains(field.TableField.FieldType))
+                        {
+                            // Future Imlementation
+                            var value = Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType);
+                        }
+                        columnsValues.Add(field.TableField.ColumnName, Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType));
+                    }
+                    else{
+                        throw new Exception("The Property " + field.TableField.ColumnName + " in the " + dataObject.GetType().Name + " Table is not allowed with [IsAllowNull]");
+                    }
+                }
+                else
+                {
+                    var dataObjectAttrValue = dataObjectAttr.GetValue(dataObject, null);
+
+                    if (dataObjectAttrValue == null) continue;
+
+                    if ( NumericTypes.Contains(field.TableField.FieldType))
+                    {
+                        var value = Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType);
+
+                        if (Convert.ToInt64(value) <= 0 && field.TableField.IsKey)
+                            continue;
+                    }
+
+                    columnsValues.Add(field.TableField.ColumnName, Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType));
+                }
+            }
 
             return 1;
         }

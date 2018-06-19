@@ -24,8 +24,13 @@ namespace UnitTestProject1
         public void TestMethod2()
         {
             var dataSourceSchema = new DataSourceSchema<RegionModel>();
-           
-            
+            var db = new DataAccess<RegionModel> {Schema = dataSourceSchema};
+            db.Insert(new RegionModel()
+            {
+                RegionID = 1,
+                RegionDescripton = "Test"
+            });
+
         }
     }
 }
