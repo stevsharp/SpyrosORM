@@ -50,13 +50,21 @@ namespace SpyrosORM.DataAccess
         {
             this.DataFields = new List<DataField>();
 
-            var tableFields = typeof(T)
-                .GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(x => x.GetCustomAttributes<DbColumnAttribute>() != null)
-                .ToList();
+            var relationFields = new List<PropertyInfo>();
+            var tableFields = new List<PropertyInfo>();
 
-            var relationFields = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(x=>x.GetCustomAttributes<DataRelationAttribute>() != null).ToList();
-            var allClassFields = relationFields.Concat(relationFields).ToList();
+            foreach (var property in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                var attributeRel = property.GetCustomAttributes(true).OfType<DataRelationAttribute>().SingleOrDefault();
+                if (attributeRel != null)
+                    relationFields.Add(property);
+
+                var attributeTable = property.GetCustomAttributes(true).OfType<DbColumnAttribute>().SingleOrDefault();
+                if (attributeTable != null)
+                    tableFields.Add(property);
+            }
+
+            var allClassFields = tableFields.Concat(relationFields).ToList();
 
             foreach (var field in allClassFields)
             {
@@ -64,12 +72,14 @@ namespace SpyrosORM.DataAccess
                 if (field.GetCustomAttributes<DbColumnAttribute>() != null)
                 {
                     newDataField.TableField = new DbTableField(){
+
                         ColumnName = field.GetCustomAttribute<DbColumnAttribute>().Name,
-                        IsIDField = field.GetCustomAttribute<IsIDFieldAttribute>() != null ? field.GetCustomAttribute<IsIDFieldAttribute>().Status : false,
-                        AllowNull = field.GetCustomAttribute<AllowNullAttribute>() != null ? field.GetCustomAttribute<AllowNullAttribute>().Status : false,
-                        AllowIDInsert = field.GetCustomAttribute<AllowIDInsertAttribute>() != null ? field.GetCustomAttribute<AllowIDInsertAttribute>().Status : false,
-                        IsKey = field.GetCustomAttribute<IsKeyAttribute>() != null ? field.GetCustomAttribute<IsKeyAttribute>().Status : false,
+                        IsIDField = field.GetCustomAttribute<IsIDFieldAttribute>() != null && field.GetCustomAttribute<IsIDFieldAttribute>().Status,
+                        AllowNull = field.GetCustomAttribute<AllowNullAttribute>() != null && field.GetCustomAttribute<AllowNullAttribute>().Status,
+                        AllowIDInsert = field.GetCustomAttribute<AllowIDInsertAttribute>() != null && field.GetCustomAttribute<AllowIDInsertAttribute>().Status,
+                        IsKey = field.GetCustomAttribute<IsKeyAttribute>() != null && field.GetCustomAttribute<IsKeyAttribute>().Status,
                         FieldType = field.PropertyType
+
                     };
                 }
 
@@ -91,3 +101,14 @@ namespace SpyrosORM.DataAccess
         }
     }
 }
+
+
+
+
+//var tableFields = typeof(T)
+//    .GetProperties(BindingFlags.Public | BindingFlags.Instance)
+//    .Where(x => x.GetCustomAttributes<DbColumnAttribute>() != null)
+//    .ToList();
+
+//relationFields = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance)
+//        .Where(x=>x.GetCustomAttributes<DataRelationAttribute>() != null).ToList();

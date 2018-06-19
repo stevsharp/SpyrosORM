@@ -50,6 +50,7 @@
     <Compile Include="DataAccess\IDataAccess.cs" />
     <Compile Include="DataAttributes\AllowIDInsertAttribute.cs" />
     <Compile Include="DataAttributes\AllowNullAttribute.cs" />
+    <Compile Include="DataAttributes\DataRelationAttribute.cs" />
     <Compile Include="DataAttributes\DataSourceAttribute.cs" />
     <Compile Include="DataAttributes\DbColumnAttribute.cs" />
     <Compile Include="DataAttributes\IsIDFieldAttribute.cs" />

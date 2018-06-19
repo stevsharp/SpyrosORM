@@ -12,12 +12,4 @@ namespace SpyrosORM.DataAttributes
             this.Name = name;
         }
     }
-
-    [System.AttributeUsage(System.AttributeTargets.Property)]
-    public class DataRelationAttribute : Attribute
-    {
-        public string Name { get; set; }
-
-        public string ThisKey { get; set; }
-    }
 }
