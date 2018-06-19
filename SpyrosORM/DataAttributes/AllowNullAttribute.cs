@@ -12,4 +12,6 @@ namespace SpyrosORM.DataAttributes
             this.Status = status;
         }
     }
+
+   
 }
