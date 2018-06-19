@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpyrosORM", "SpyrosORM\SpyrosORM.csproj", "{0E6D5317-6E9D-45E0-A245-84FDB4BD1994}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestProject1", "UnitTestProject1\UnitTestProject1.csproj", "{D17B8663-1E27-4EAF-81D2-3699BDFCF0EB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E6D5317-6E9D-45E0-A245-84FDB4BD1994}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E6D5317-6E9D-45E0-A245-84FDB4BD1994}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E6D5317-6E9D-45E0-A245-84FDB4BD1994}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E6D5317-6E9D-45E0-A245-84FDB4BD1994}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D17B8663-1E27-4EAF-81D2-3699BDFCF0EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D17B8663-1E27-4EAF-81D2-3699BDFCF0EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D17B8663-1E27-4EAF-81D2-3699BDFCF0EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D17B8663-1E27-4EAF-81D2-3699BDFCF0EB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4373C1B3-1D96-473D-8756-4E3987018622}
+	EndGlobalSection
+EndGlobal
