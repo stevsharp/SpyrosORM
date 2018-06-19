@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -40,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAccess\ConfigurationSetting.cs" />
     <Compile Include="DataAccess\CustomExpressionVisitor.cs" />
     <Compile Include="DataAccess\DataAccess.cs" />
     <Compile Include="DataAccess\DataField.cs" />
@@ -48,6 +50,7 @@
     <Compile Include="DataAccess\DbRelation.cs" />
     <Compile Include="DataAccess\DbTableField.cs" />
     <Compile Include="DataAccess\IDataAccess.cs" />
+    <Compile Include="DataAccess\SqlGenerator.cs" />
     <Compile Include="DataAttributes\AllowIDInsertAttribute.cs" />
     <Compile Include="DataAttributes\AllowNullAttribute.cs" />
     <Compile Include="DataAttributes\DataRelationAttribute.cs" />
