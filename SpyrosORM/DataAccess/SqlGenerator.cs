@@ -9,5 +9,6 @@ namespace SpyrosORM.DataAccess
     public class SqlDatabase
     {
 
+
     }
 }
