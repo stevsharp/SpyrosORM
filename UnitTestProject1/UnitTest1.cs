@@ -25,11 +25,13 @@ namespace UnitTestProject1
         {
             var dataSourceSchema = new DataSourceSchema<RegionModel>();
             var db = new DataAccess<RegionModel> {Schema = dataSourceSchema};
-            db.Insert(new RegionModel()
+            var id = db.Insert(new RegionModel()
             {
-                RegionID = 1,
+                RegionID = 5,
                 RegionDescripton = "Test"
             });
+
+            Assert.IsTrue(id > 0);
 
         }
     }

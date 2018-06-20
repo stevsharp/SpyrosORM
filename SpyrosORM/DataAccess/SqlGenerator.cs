@@ -69,7 +69,7 @@ namespace SpyrosORM.DataAccess
                 fields.Remove(fields.Length - 1, 1).Append(")");
                 values.Remove(values.Length - 1, 1).Append(")");
 
-                var insertQuery = $"INSERT INTO [{tableName}] {fields} OUTPUT INSERTED.{idFieldName}  VALUES {values}";
+                string insertQuery = string.Format("INSERT INTO [{0}] {1} VALUES {2}", tableName, fields, values);
 
                 using (var cn = new SqlConnection(ConnectionString_Lync))
                 {

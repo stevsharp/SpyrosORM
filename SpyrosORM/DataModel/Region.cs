@@ -9,7 +9,6 @@ namespace SpyrosORM.DataModel
         /// /
         /// </summary>
         [IsIDField]
-        [AllowIDInsert]
         [DbColumn("RegionID")]
         public int RegionID { get; set; }
         /// <summary>

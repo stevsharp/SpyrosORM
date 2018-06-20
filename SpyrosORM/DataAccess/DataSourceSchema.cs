@@ -15,7 +15,7 @@ namespace SpyrosORM.DataAccess
         /// <summary>
         /// 
         /// </summary>
-        private string IDFieldName;
+        public string IDFieldName { get; private set; }
 
         /// <summary>
         /// 
@@ -87,19 +87,22 @@ namespace SpyrosORM.DataAccess
                     };
                 }
 
-                if (field.GetCustomAttribute<DataRelationAttribute>() == null) continue;
-
-                var dataRelationAttribute = field.GetCustomAttribute<DataRelationAttribute>();
-
-                newDataField.Relation = new DbRelation()
+                if (field.GetCustomAttribute<DataRelationAttribute>() != null)
                 {
-                    DataField = field.Name,
-                    RelationName = dataRelationAttribute.Name
-                    //WithDataModel = dataRelationAttribute.WithDataModel,
-                    //OnDataModelKey = dataRelationAttribute.OnDataModelKey,
-                    //ThisKey = dataRelationAttribute.ThisKey,
-                    //RelationType = dataRelationAttribute.RelationType
-                };
+                    var dataRelationAttribute = field.GetCustomAttribute<DataRelationAttribute>();
+
+                    newDataField.Relation = new DbRelation()
+                    {
+                        DataField = field.Name,
+                        RelationName = dataRelationAttribute.Name
+                        //WithDataModel = dataRelationAttribute.WithDataModel,
+                        //OnDataModelKey = dataRelationAttribute.OnDataModelKey,
+                        //ThisKey = dataRelationAttribute.ThisKey,
+                        //RelationType = dataRelationAttribute.RelationType
+                    };
+                }
+
+
 
                 this.DataFields.Add(newDataField);
             }

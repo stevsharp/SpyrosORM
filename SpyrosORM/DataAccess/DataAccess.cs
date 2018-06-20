@@ -18,6 +18,10 @@ namespace SpyrosORM.DataAccess
         /// <summary>
         /// 
         /// </summary>
+        private static SqlDatabase Database = new SqlDatabase();
+        /// <summary>
+        /// 
+        /// </summary>
         private static readonly List<Type> NumericTypes = new List<Type>() { typeof(int), typeof(long), typeof(Int16), typeof(Int32), typeof(Int64) };
         /// <summary>
         /// 
@@ -74,7 +78,19 @@ namespace SpyrosORM.DataAccess
                 }
             }
 
-            return 1;
+            var rowID = 0;
+
+            try
+            {
+                rowID = Database.INSERT(tableName: Schema.DataSourceName, columnsValues: columnsValues, idFieldName: Schema.IDFieldName);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+
+            return rowID;
         }
         /// <summary>
         /// 
