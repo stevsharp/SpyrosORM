@@ -27,5 +27,65 @@ namespace SpyrosORM.DataAccess
         {
             return new SqlConnection(connectionString);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="columnsValues"></param>
+        /// <param name="idFieldName"></param>
+        /// <returns></returns>
+        public int INSERT(string tableName, Dictionary<string, object> columnsValues, string idFieldName)
+        {
+            var fields = new StringBuilder();
+            fields.Append("(");
+            var values = new StringBuilder();
+            values.Append(")");
+            var recordID = 0;
+
+            try
+            {
+                foreach (var pair in columnsValues)
+                {
+                    switch (pair.Value)
+                    {
+                        case null:
+                            fields.Append("[" + pair.Key + "],");
+                            values.Append("NULL" + ",");
+                            break;
+                        case int _:
+                        case double _:
+                            fields.Append("[" + pair.Key + "],");
+                            values.Append(pair.Value + ",");
+                            break;
+                        case DateTime _ when (DateTime)pair.Value == DateTime.MinValue:
+                            continue;
+                        default:
+                            fields.Append("[" + pair.Key + "],");
+                            values.Append("'" + pair.Value.ToString().Replace("'", "`") + "'" + ",");
+                            break;
+                    }
+                }
+
+                fields.Remove(fields.Length - 1, 1).Append(")");
+                values.Remove(values.Length - 1, 1).Append(")");
+
+                var insertQuery = $"INSERT INTO [{tableName}] {fields} OUTPUT INSERTED.{idFieldName}  VALUES {values}";
+
+                using (var cn = new SqlConnection(ConnectionString_Lync))
+                {
+                    var cmd = cn.CreateCommand();
+                    cmd.CommandText = insertQuery;
+                    cn.Open();
+                    recordID = Convert.ToInt32(cmd.ExecuteScalar());
+                }
+
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
+
+            return recordID;
+        }
     }
 }
