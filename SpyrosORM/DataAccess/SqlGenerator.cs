@@ -139,6 +139,35 @@ namespace SpyrosORM.DataAccess
                 throw;
             }
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="idFieldName"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public bool Delete(string tableName, string idFieldName, int ID)
+        {
+            var deleteQuery = $"DELETE FROM [{tableName}] WHERE {idFieldName} = {ID}";
+
+            try
+            {
+                using (var cn = new SqlConnection(ConnectionString_Lync))
+                {
+                    var cmd = cn.CreateCommand();
+                    cmd.CommandText = deleteQuery;
+                    cn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
     }
 }
 

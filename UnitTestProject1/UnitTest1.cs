@@ -51,5 +51,21 @@ namespace UnitTestProject1
 
             Assert.IsTrue(isTrUpdate);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        [TestMethod]
+        public void Delete()
+        {
+            var dataSourceSchema = new DataSourceSchema<RegionModel>();
+            var db = new DataAccess<RegionModel> { Schema = dataSourceSchema };
+            var isDelete = db.Delete(new RegionModel()
+            {
+                RegionID = 6,
+                RegionDescripton = "Test11"
+            });
+
+            Assert.IsTrue(isDelete);
+        }
     }
 }
