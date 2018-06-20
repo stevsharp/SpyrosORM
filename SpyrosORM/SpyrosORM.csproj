@@ -50,7 +50,9 @@
     <Compile Include="DataAccess\DbRelation.cs" />
     <Compile Include="DataAccess\DbTableField.cs" />
     <Compile Include="DataAccess\IDataAccess.cs" />
+    <Compile Include="DataAccess\IUnitOfWork.cs" />
     <Compile Include="DataAccess\SqlGenerator.cs" />
+    <Compile Include="DataAccess\UnitOfWork.cs" />
     <Compile Include="DataAttributes\AllowIDInsertAttribute.cs" />
     <Compile Include="DataAttributes\AllowNullAttribute.cs" />
     <Compile Include="DataAttributes\DataRelationAttribute.cs" />

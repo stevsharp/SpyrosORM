@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.OleDb;
 using System.Data.SqlClient;
 using System.Linq;
@@ -10,6 +11,14 @@ namespace SpyrosORM.DataAccess
 {
     public class SqlDatabase
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        protected IDbConnection _connection;
+        /// <summary>
+        /// 
+        /// </summary>
+        protected IDbTransaction _transaction;
         /// <summary>
         /// 
         /// </summary>
@@ -27,6 +36,7 @@ namespace SpyrosORM.DataAccess
         {
             return new SqlConnection(connectionString);
         }
+        
         /// <summary>
         /// 
         /// </summary>
@@ -39,11 +49,12 @@ namespace SpyrosORM.DataAccess
             var fields = new StringBuilder();
             fields.Append("(");
             var values = new StringBuilder();
-            values.Append(")");
+            values.Append("(");
             var recordID = 0;
 
             try
             {
+
                 foreach (var pair in columnsValues)
                 {
                     switch (pair.Value)
@@ -69,19 +80,17 @@ namespace SpyrosORM.DataAccess
                 fields.Remove(fields.Length - 1, 1).Append(")");
                 values.Remove(values.Length - 1, 1).Append(")");
 
-                string insertQuery = string.Format("INSERT INTO [{0}] {1} VALUES {2}", tableName, fields, values);
+                var insertQuery = string.Format("INSERT INTO [{0}] {1} VALUES {2}", tableName, fields, values);
 
                 using (var cn = new SqlConnection(ConnectionString_Lync))
                 {
                     var cmd = cn.CreateCommand();
                     cmd.CommandText = insertQuery;
                     cn.Open();
-                    recordID = Convert.ToInt32(cmd.ExecuteScalar());
+                    recordID = Convert.ToInt32(cmd.ExecuteNonQuery());
                 }
-
             }
-            catch (Exception e)
-            {
+            catch (Exception e){
                 throw;
             }
 
@@ -89,3 +98,36 @@ namespace SpyrosORM.DataAccess
         }
     }
 }
+
+
+//foreach (var pair in columnsValues)
+//{
+//    switch (pair.Value)
+//    {
+//        case null:
+//            fields.Append("[" + pair.Key + "],");
+//            values.Append("NULL" + ",");
+//            break;
+//        case int _:
+//        case double _:
+//            fields.Append("[" + pair.Key + "],");
+//            values.Append(pair.Value + ",");
+//            break;
+//        case DateTime _ when (DateTime)pair.Value == DateTime.MinValue:
+//            continue;
+//        default:
+//            fields.Append("[" + pair.Key + "],");
+//            values.Append("'" + pair.Value.ToString().Replace("'", "`") + "'" + ",");
+//            break;
+//    }
+//}
+
+//fields.Remove(fields.Length - 1, 1).Append(")");
+//values.Remove(values.Length - 1, 1).Append(")");
+
+//string insertQuery = string.Format("INSERT INTO [{0}] {1} VALUES {2}", tableName, fields, values);
+
+//var fields = new StringBuilder();
+//fields.Append("(");
+//var values = new StringBuilder();
+//values.Append(")");
