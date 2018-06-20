@@ -28,7 +28,6 @@ namespace SpyrosORM.DataAccess
         {
             _connection = connection;
             _transaction = connection.BeginTransaction();
-
         }
         /// <summary>
         /// 

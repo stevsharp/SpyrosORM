@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,11 +64,9 @@ namespace SpyrosORM.DataAccess
                 else
                 {
                     var dataObjectAttrValue = dataObjectAttr.GetValue(dataObject, null);
-
                     if (dataObjectAttrValue == null) continue;
 
-                    if ( NumericTypes.Contains(field.TableField.FieldType))
-                    {
+                    if ( NumericTypes.Contains(field.TableField.FieldType)){
                         var value = Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType);
 
                         if (Convert.ToInt64(value) <= 0 && field.TableField.IsKey)
@@ -82,7 +81,7 @@ namespace SpyrosORM.DataAccess
 
             try
             {
-                rowID = Database.INSERT(tableName: Schema.DataSourceName, columnsValues: columnsValues, idFieldName: Schema.IDFieldName);
+                rowID = Database.INSERT(Schema.DataSourceName, columnsValues, Schema.IDFieldName);
             }
             catch (Exception e)
             {
@@ -92,6 +91,81 @@ namespace SpyrosORM.DataAccess
 
             return rowID;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataObject"></param>
+        /// <returns></returns>
+        public virtual bool Update(T dataObject)
+        {
+            var columnsValues = new Dictionary<string, object>();
+
+            var objectSchemaFields = Schema.DataFields.Where(field => field.TableField != null).ToList<DataField>();
+
+            foreach (var field in objectSchemaFields)
+            {
+                if (field.TableField.IsIDField && field.TableField.AllowIDInsert) continue;
+                var dataObjectAttr = dataObject.GetType().GetProperty(field.Name);
+                if (dataObjectAttr == null) continue;
+
+                if (!field.TableField.AllowNull)
+                {
+                    var dataObjectAttrValue = dataObjectAttr.GetValue(dataObject, null);
+                    if (dataObjectAttrValue != null)
+                    {
+                        if (NumericTypes.Contains(field.TableField.FieldType))
+                        {
+                            // Future Imlementation
+                            var value = Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType);
+                        }
+
+                        columnsValues.Add(field.TableField.ColumnName,
+                            Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType));
+                    }
+                    else
+                        throw new Exception("The Property " + field.TableField.ColumnName + " in the " +
+                                            dataObject.GetType().Name + " Table is not allowed with [IsAllowNull]");
+                }
+                else
+                {
+                    var dataObjectAttrValue = dataObjectAttr.GetValue(dataObject, null);
+                    if (dataObjectAttrValue == null) continue;
+
+                    if (NumericTypes.Contains(field.TableField.FieldType))
+                    {
+                        var value = Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType);
+
+                        if (Convert.ToInt64(value) <= 0 && field.TableField.IsKey)
+                            continue;
+                    }
+
+                    columnsValues.Add(field.TableField.ColumnName,
+                        Convert.ChangeType(dataObjectAttrValue, field.TableField.FieldType));
+                }
+            }
+
+            try
+            {
+                var ID = 0;
+
+                foreach (var prop in dataObject.GetType().GetProperties())
+                {
+                    var attribute = prop.GetCustomAttribute<IsIDFieldAttribute>();
+                    if (attribute == null) continue;
+                    if (int.TryParse(prop.GetValue(dataObject).ToString(), out ID))
+                        ID = Convert.ToInt32(prop.GetValue(dataObject).ToString());
+                    
+                }
+                return ID != 0 && Database.UPDATE(Schema.DataSourceName, columnsValues, Schema.IDFieldName, ID);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+
         /// <summary>
         /// 
         /// </summary>

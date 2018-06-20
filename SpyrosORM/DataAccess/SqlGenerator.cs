@@ -54,7 +54,6 @@ namespace SpyrosORM.DataAccess
 
             try
             {
-
                 foreach (var pair in columnsValues)
                 {
                     switch (pair.Value)
@@ -80,12 +79,10 @@ namespace SpyrosORM.DataAccess
                 fields.Remove(fields.Length - 1, 1).Append(")");
                 values.Remove(values.Length - 1, 1).Append(")");
 
-                var insertQuery = string.Format("INSERT INTO [{0}] {1} VALUES {2}", tableName, fields, values);
-
                 using (var cn = new SqlConnection(ConnectionString_Lync))
                 {
                     var cmd = cn.CreateCommand();
-                    cmd.CommandText = insertQuery;
+                    cmd.CommandText = $"INSERT INTO [{tableName}] {fields} VALUES {values}"; 
                     cn.Open();
                     recordID = Convert.ToInt32(cmd.ExecuteNonQuery());
                 }
@@ -95,6 +92,52 @@ namespace SpyrosORM.DataAccess
             }
 
             return recordID;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="tableName"></param>
+        /// <param name="columnsValues"></param>
+        /// <param name="idFieldName"></param>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        public bool UPDATE(string tableName, Dictionary<string, object> columnsValues, string idFieldName, int ID)
+        {
+            var fieldsValues = new StringBuilder();
+
+            foreach (var pair in columnsValues)
+            {
+
+                var valueType = pair.Value.GetType();
+
+                if (valueType == typeof(int) || valueType == typeof(double))
+                    fieldsValues.Append("[" + pair.Key + "]=" + pair.Value + ",");
+                else if (valueType == typeof(DateTime) && (DateTime)pair.Value == DateTime.MinValue)
+                    continue;
+                else
+                    fieldsValues.Append("[" + pair.Key + "]=" + "'" + pair.Value + "'" + ",");
+            }
+
+            fieldsValues.Remove(fieldsValues.Length - 1, 1);
+            var updateQuery = $"UPDATE  [{tableName}] SET {fieldsValues} WHERE [{idFieldName}]={ID}";
+
+            try
+            {
+                using (var cn = new SqlConnection(ConnectionString_Lync))
+                {
+                    var cmd = cn.CreateCommand();
+                    cmd.CommandText = updateQuery;
+                    cn.Open();
+                    cmd.ExecuteNonQuery();
+                }
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
     }
 }

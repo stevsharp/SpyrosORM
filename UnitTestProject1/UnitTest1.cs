@@ -19,20 +19,37 @@ namespace UnitTestProject1
             var id = 1;
             var list = db.Get(x => x.RegionID == id);
         }
-
+        /// <summary>
+        /// 
+        /// </summary>
         [TestMethod]
-        public void TestMethod2()
+        public void Insert()
         {
             var dataSourceSchema = new DataSourceSchema<RegionModel>();
             var db = new DataAccess<RegionModel> {Schema = dataSourceSchema};
             var id = db.Insert(new RegionModel()
             {
-                RegionID = 5,
+                RegionID = 6,
                 RegionDescripton = "Test"
             });
 
             Assert.IsTrue(id > 0);
+        }
+        /// <summary>
+        /// /
+        /// </summary>
+        [TestMethod]
+        public void Update()
+        {
+            var dataSourceSchema = new DataSourceSchema<RegionModel>();
+            var db = new DataAccess<RegionModel> { Schema = dataSourceSchema };
+            var  isTrUpdate= db.Update(new RegionModel()
+            {
+                RegionID = 6,
+                RegionDescripton = "Test11"
+            });
 
+            Assert.IsTrue(isTrUpdate);
         }
     }
 }
